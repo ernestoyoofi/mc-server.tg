@@ -1,8 +1,11 @@
 {
   "name": "mc-server.tg",
-  "version": "1.0.0",
+  "version": "1.10.2-release",
   "main": "index.js",
   "type": "module",
+  "bin": {
+    "mcbess": "./bin/bin.js"
+  },
   "directories": {
     "lib": "lib"
   },

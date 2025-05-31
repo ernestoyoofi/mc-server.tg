@@ -123,8 +123,12 @@ async function setupServer(IgnoreSafetyFolder = false) {
   if(promptRunExec['exec'] === "true") {
     console.log(`[${chalk.gray("Log")}]: Wait...`)
     await sleep(500)
+    console.log(`[${chalk.gray("Log")}]: -----------------------------------`)
+    console.log(`[${chalk.gray("Log")}]: [INFO]`)
+    console.log(`[${chalk.gray("Log")}]: Hit CTRL + C 2x to exit from this process`)
+    console.log(`[${chalk.gray("Log")}]: -----------------------------------`)
     console.log(`[${chalk.gray("Log")}]: Launching ${executeFile}...`)
-    console.log(`[${chalk.blue("Launch")}]: > ${executeFile}`)
+    console.log(`[${chalk.blue("Launch")}]: ${chalk.gray(`> ${executeFile}`)}`)
     await sleep(500)
     await executeFileExe(executeFile)
   }

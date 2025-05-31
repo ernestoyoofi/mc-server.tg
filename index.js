@@ -1,12 +1,22 @@
 import inquirer from "inquirer"
 import { Separator } from "@inquirer/core"
 import chalk from "chalk"
-import * as openurl from "openurl"
+// import * as openurl from "openurl"
 import fs from "fs"
+import path from "path"
 
 import downloadFileServer from "./plugin/download-server.js"
 import sleep from "./lib/sleep.js"
+// import HitEnterToRun from "./lib/hit-to-run.js"
+import { defaultContext } from "./lib/default-value.js"
+import executeFileExe from "./lib/execute-file.js"
 import setupServer from "./plugin/setup-server.js"
+import updateServer from "./plugin/update-server.js"
+import backupServer from "./plugin/backup-server.js"
+import restoreServer from "./plugin/restore-server.js"
+import { fileURLToPath } from "url"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 async function startMainRunning() {
   // console.clear()
@@ -19,17 +29,23 @@ async function startMainRunning() {
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 
  
  [ ${chalk.yellow("MINECRAFT BEDROCK SETUP SERVER")} ✨ ]
- [ Version: ${JSON.parse(fs.readFileSync("./package.json","utf-8")).version} ]
+ [ Version: ${JSON.parse(fs.readFileSync(__dirname+"/package.json","utf-8")).version} ]
 `)
   const chooseToSelectMenu = [
     new Separator(`${chalk.gray("─────")} Menu ${chalk.gray("─────")}`),
+    { name: "• Running Server", value: "run-server" },
     { name: "• Downloading File Server", value: "download-server" },
     { name: "• Setup Server New (Remove All If Exist)", value: "setup-server" },
     { name: "• Update Server", value: "update-server" },
-    { name: "• Restore Server (Comming Soon)", value: "restore-server" },
-    { name: "• Backup Server (Comming Soon)", value: "backup-server" },
+    { name: "• Restore Server", value: "restore-server" },
+    { name: "• Backup Server", value: "backup-server" },
+    new Separator(`${chalk.gray("────")} Add-On ${chalk.gray("─────")}`),
+    { name: "• Installed Add-On (Next Version)", value: "list-install-addons" },
+    { name: "• List Add-On (Next Version)", value: "list-addons" },
+    { name: "• Install Add-On (Next Version)", value: "install-addons" },
+    { name: "• Remove Add-On (Next Version)", value: "remove-addons" },
     new Separator(`${chalk.gray("────")} Other ${chalk.gray("─────")}`),
-    { name: "• Help (Documentation)", value: "docs-help" },
+    // { name: "• Help (Documentation)", value: "docs-help" },
     { name: "• Exit", value: "exit" },
   ]
   const promptMenu = await inquirer.prompt([
@@ -42,9 +58,33 @@ async function startMainRunning() {
     case "setup-server": {
       await setupServer()
     } break;
-    case "docs-help": {
-      openurl.open("https://nakikoneko.gitbook.io/mcbe.s.s")
+    case "update-server": {
+      await updateServer()
     } break;
+    case "restore-server": {
+      await restoreServer()
+    } break;
+    case "backup-server": {
+      await backupServer()
+    } break;
+    case "run-server": {
+      const serverFolder = path.join(defaultContext.folderServer)
+      const readdirFileExecuted = fs.readdirSync(serverFolder).filter(a => a.match("bedrock_server") && a.length < 19)[0]
+      const executeFile = path.join(serverFolder, readdirFileExecuted)
+      console.log(`[${chalk.gray("Log")}]: -----------------------------------`)
+      console.log(`[${chalk.gray("Log")}]: [INFO]`)
+      console.log(`[${chalk.gray("Log")}]: Hit CTRL + C 2x to exit from this process`)
+      console.log(`[${chalk.gray("Log")}]: -----------------------------------`)
+      console.log(`[${chalk.gray("Log")}]: Launching ${executeFile}...`)
+      console.log(`[${chalk.blue("Launch")}]: ${chalk.gray(`> ${executeFile}`)}`)
+      await sleep(500)
+      await executeFileExe(executeFile)
+      await sleep(1000)
+    } break;
+    // case "docs-help": {
+    //   // None Exist Again For Documentation
+    //   openurl.open("https://nakikoneko.gitbook.io/mcbe.s.s")
+    // } break;
     case "exit": {
       await sleep(100)
       console.log("  [X] Goodbye 👋")
@@ -55,3 +95,4 @@ async function startMainRunning() {
   startMainRunning()
 }
 startMainRunning()
+// HitEnterToRun(startMainRunning)

@@ -136,6 +136,7 @@ async function setupConfigurationServer() {
   for(let changeUnit of changeAllUnit) {
     unitChange = String(unitChange).replace(`${changeUnit.name}=${getValueFromKey(unitChange, changeUnit.name)}`, `${changeUnit.name}=${changeUnit.value}`)
   }
+  unitChange = String(unitChange).replace(`level-name=${getValueFromKey(unitChange, "level-name")}`, `level-name=world`)
   fs.writeFileSync(pathConfig, unitChange, "utf-8")
   console.log(`[${chalk.green("Success")}]: Success save configuration!`)
   await sleep(2000)
