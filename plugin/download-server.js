@@ -69,19 +69,35 @@ async function downloadFileServer() {
   const loadingMain = Spinner(`[${chalk.gray("Request")}]: %s Get File Downloading..`)
   loadingMain.setSpinnerString(18)
   loadingMain.start()
-  const requestMain = await fetching("https://www.minecraft.net/en-us/download/server/bedrock")
+  // --- [UPDATE NEW] ---
+  const requestMain = await fetching("https://net-secondary.web.minecraft-services.net/api/v1.0/download/links")
   loadingMain.stop(true)
   await sleep(1000)
   if(requestMain.error) {
     console.error("ErrorRequest:", requestMain)
     throw new Error(requestMain.error)
   }
-  const parsing = cheerio.load(requestMain.data)
-  const getADoc = String(parsing(`a[data-platform="${domSelection}"]`)?.attr("href")||"")
-  const fileName = String(promptChannel.channel+"-"+(new URL(getADoc)?.pathname?.split("/")?.pop()))
-  if(!getADoc.trim()) {
+  const loadData = (requestMain?.data?.result?.links||[])
+  const findLastVersion = loadData.find(a => a.downloadType === domSelection)
+  // const requestMain = await fetching("https://www.minecraft.net/en-us/download/server/bedrock")
+  // loadingMain.stop(true)
+  // await sleep(1000)
+  // if(requestMain.error) {
+  //   console.error("ErrorRequest:", requestMain)
+  //   throw new Error(requestMain.error)
+  // }
+  // console.log(requestMain.data)
+  // const parsing = cheerio.load(requestMain.data)
+  // const getADoc = String(parsing(`a[data-platform="${domSelection}"]`)?.attr("href")||"")
+  // const fileName = String(promptChannel.channel+"-"+(new URL(getADoc)?.pathname?.split("/")?.pop()))
+  // if(!getADoc.trim()) {
+  //   throw new Error("No URL To Downloading In Offical!")
+  // }
+  const getADoc = String(findLastVersion?.downloadUrl||"")
+  if(!findLastVersion || !getADoc) {
     throw new Error("No URL To Downloading In Offical!")
   }
+  const fileName = String(promptChannel.channel+"-"+(new URL(getADoc)?.pathname?.split("/")?.pop()))
   console.log(`[${chalk.gray("Request")}]: URL:`, getADoc)
   // Downloading
   const loadingDown = Spinner(`[${chalk.gray("Request")}]: %s Connect to server ..`)

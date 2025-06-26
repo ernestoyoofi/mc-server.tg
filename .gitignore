@@ -1,10 +1,16 @@
+# Node JS
 package-lock.json
 run.sh
 node_modules
+# Building Script (It Automatic Build If You Installed)
+cache-run-*
+cache
+addons
 download
 server
 backup
 docs
 up-backup
-mc-server.tg.zip
 build
+# Another One
+mc-server.tg.zip

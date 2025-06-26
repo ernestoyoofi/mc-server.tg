@@ -1,25 +1,24 @@
 import inquirer from "inquirer"
 import { Separator } from "@inquirer/core"
 import chalk from "chalk"
-// import * as openurl from "openurl"
 import fs from "fs"
 import path from "path"
-
+import { defaultContext } from "./lib/default-value.js"
+import { fileURLToPath } from "url"
 import downloadFileServer from "./plugin/download-server.js"
 import sleep from "./lib/sleep.js"
-// import HitEnterToRun from "./lib/hit-to-run.js"
-import { defaultContext } from "./lib/default-value.js"
+import SetupFolderUp from "./lib/setup-folder-up.js"
 import executeFileExe from "./lib/execute-file.js"
 import setupServer from "./plugin/setup-server.js"
 import updateServer from "./plugin/update-server.js"
 import backupServer from "./plugin/backup-server.js"
 import restoreServer from "./plugin/restore-server.js"
-import { fileURLToPath } from "url"
+import listInstallAddons from "./plugin/list-install-addons.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 async function startMainRunning() {
-  // console.clear()
+  SetupFolderUp()
   console.log(`
   
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 
@@ -40,12 +39,11 @@ async function startMainRunning() {
     { name: "• Restore Server", value: "restore-server" },
     { name: "• Backup Server", value: "backup-server" },
     new Separator(`${chalk.gray("────")} Add-On ${chalk.gray("─────")}`),
-    { name: "• Installed Add-On (Next Version)", value: "list-install-addons" },
+    { name: "• List Up Add-On", value: "list-install-addons" },
     { name: "• List Add-On (Next Version)", value: "list-addons" },
     { name: "• Install Add-On (Next Version)", value: "install-addons" },
     { name: "• Remove Add-On (Next Version)", value: "remove-addons" },
     new Separator(`${chalk.gray("────")} Other ${chalk.gray("─────")}`),
-    // { name: "• Help (Documentation)", value: "docs-help" },
     { name: "• Exit", value: "exit" },
   ]
   const promptMenu = await inquirer.prompt([
@@ -67,6 +65,9 @@ async function startMainRunning() {
     case "backup-server": {
       await backupServer()
     } break;
+    case "list-install-addons": {
+      await listInstallAddons()
+    } break;
     case "run-server": {
       const serverFolder = path.join(defaultContext.folderServer)
       const readdirFileExecuted = fs.readdirSync(serverFolder).filter(a => a.match("bedrock_server") && a.length < 19)[0]
@@ -81,10 +82,6 @@ async function startMainRunning() {
       await executeFileExe(executeFile)
       await sleep(1000)
     } break;
-    // case "docs-help": {
-    //   // None Exist Again For Documentation
-    //   openurl.open("https://nakikoneko.gitbook.io/mcbe.s.s")
-    // } break;
     case "exit": {
       await sleep(100)
       console.log("  [X] Goodbye 👋")
@@ -95,4 +92,3 @@ async function startMainRunning() {
   startMainRunning()
 }
 startMainRunning()
-// HitEnterToRun(startMainRunning)

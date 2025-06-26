@@ -1,6 +1,6 @@
 {
   "name": "mc-server.tg",
-  "version": "1.10.2-release",
+  "version": "1.11.2-release",
   "main": "index.js",
   "type": "module",
   "bin": {
